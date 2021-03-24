@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    node-app:
+        build:
+          context: ./node
+        restart: always          
+        container_name: node-app
+        hostname: node-app
+        ports:
+            - "3000:8080" 
+        networks:
+            - net  
+    nginx:
+        build:
+          context: ./nginx
+        restart: always          
+        container_name: nginx
+        hostname: nginx
+        ports:
+            - "80:80" 
+        depends_on:
+            - node-app
+        networks:
+            - net
+    mysql_db:
+        image: mysql:8.0
+        restart: always
+        container_name: mysql_db
+        hostname: mysql_db
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+            - "3306:3306"
+        networks:
+            - net
+
+networks:
+  net:
+    external: true
